@@ -7,13 +7,28 @@
 //
 
 #import "VHMAppDelegate.h"
+#import "VHMListaContatosViewController.h"
 
 @implementation VHMAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    NSArray *dirs = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *docDir = dirs[0];
+    self.nomeArquivo = [NSString stringWithFormat:@"%@/Contatos", docDir];
+    
+    self.contatos = [NSKeyedUnarchiver unarchiveObjectWithFile:self.nomeArquivo];
+    
+    if(!self.contatos){
+        self.contatos = [[NSMutableArray alloc] init];
+    }
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
+    VHMListaContatosViewController *lista = [[VHMListaContatosViewController alloc] init];
+    lista.contatos = self.contatos;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:lista];
+    self.window.rootViewController = nav;
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     return YES;
@@ -29,6 +44,7 @@
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    [NSKeyedArchiver archiveRootObject:self.contatos toFile: self.nomeArquivo];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application

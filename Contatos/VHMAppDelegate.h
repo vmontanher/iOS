@@ -11,5 +11,7 @@
 @interface VHMAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+@property (strong, atomic) NSMutableArray *contatos;
+@property (strong, atomic) NSString *nomeArquivo;
 
 @end
